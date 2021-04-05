@@ -1,0 +1,116 @@
+package com.smartcity.web;
+
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.smartcity.model.Offer;
+import com.smartcity.model.User;
+import com.smartcity.model.UserData;
+import com.smartcity.repository.UserDataRepository;
+import com.smartcity.repository.UserRepository;
+import com.smartcity.service.UserDataService;
+import com.smartcity.service.UserService;
+
+@Controller
+public class MainController {
+	
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	UserDataRepository repository;
+	@Autowired
+	UserService service;
+	@Autowired
+	UserDataService dataService;
+	
+	private long myUserID;
+		
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}
+	
+	@RequestMapping("/")
+	public String home() {
+		return "index";
+	}
+	
+	@GetMapping("/page")
+	public String page() {
+		return "page";
+	}
+	/* bug version
+	@GetMapping("/profile")
+	public String detailsUser(Model model, User user,UserData userData) {
+			 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			 String username = ((UserDetails)principal).getUsername();
+		 user = this.userRepository.findByEmail(username);
+		 long userID = user.getId();
+
+		User userDetails = this.userRepository.findById(userID)
+					.orElseThrow(() -> new IllegalArgumentException("Invalid candidate id : "));
+		userData = user.getData();
+		long idDescription = userData.getId();
+		UserData description = this.repository.findById(idDescription)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid data id : "));
+		System.out.println("My ID = " + idDescription );
+		model.addAttribute("userData",description);
+		model.addAttribute("user", userDetails);
+		return "about-me";
+	}
+	*/
+	@GetMapping("add-details/{id}")
+	public String showStudentForm(@PathVariable ("id") long id,UserData userData, Model model) {
+		UserData dataID = this.repository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid data id : " + id));
+		myUserID = id;
+		model.addAttribute("data", dataID);
+	//	model.addAttribute("event", event);
+		return "add-data";
+	}
+
+	@PostMapping("addData/{id}") 
+	public String addVisiter(@Valid UserData data, BindingResult result,@PathVariable ("id") long id, Model model) {
+		if(result.hasErrors()) {
+		return "add-data";
+		
+		}
+		System.out.println("MyUserID = " + myUserID);
+		UserData userData = this.repository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid data id : " + myUserID));
+		User user = userData.getUser();
+		data.setUser(user);
+		repository.save(data);
+		model.addAttribute("data", data);
+		return "redirect:/";
+	}
+	
+	@GetMapping("/profile")
+	public String viewJobOffer(Model model, User user) {
+		 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		 String username = ((UserDetails)principal).getUsername();
+	 user = this.userRepository.findByEmail(username);
+	 long userID = user.getId();
+
+	User userDetails = this.userRepository.findById(userID)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid candidate id : "));
+	UserData userData = user.getData();
+	long idDescription = userData.getId();
+		UserData offer = this.repository.findById(idDescription)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid offer id : "));
+
+		model.addAttribute("user", userDetails);
+		model.addAttribute("data", offer);
+		return "user-profile";
+	}
+
+}

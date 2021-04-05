@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Add Event</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="../css/shards.min.css"> -->
+</head>
+
+<body>
+  <!--   <div class="container my-5">
+        <div class="card">
+            <div class="card-body">
+				<h1>Add more information for your profile</h1>
+                <div class="col-md-10">
+                    <form action="#" th:action="@{/addData}" th:object="${event}" method="post">
+                        <div class="row">
+                        <div class="col-md-6">
+                                <label for="aboutMe" class="col-form-label">Describe yourself</label> <input type="text" class="form-control" id="aboutMe" placeholder="About me..">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="submit" class="btn btn-primary" value="Add Data">
+                            </div>
+
+                            <div class="form-group col-md-8"></div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <h4 th:href="${userData.id}"></h4>
+<h4 th:text="${user.id}"></h4>
+<h4 th:text="${user.firstName}"></h4>
+<h4 th:text="${user.lastName}"></h4>
+<h4 th:text="${user.email}"></h4>
+ <a th:href="@{/add-details/{id}(id=${userData.id})}" class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i></a>
+</body>
+
+</html>
