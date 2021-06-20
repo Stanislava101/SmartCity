@@ -39,6 +39,13 @@ public class OfferService {
 	        return repo.findAllByEmp(email);
 	    }
 	    
+	    public List<Offer> listAllOffers(String keyword) {
+	        if (keyword != null) {
+	            return repo.findAll(keyword);
+	        }
+	        return repo.findAll();
+	    }
+	    
 	    public List<Offer> listAllUsers(String keyword) {
 	    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			String email = ((UserDetails)principal).getUsername();

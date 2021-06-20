@@ -38,9 +38,6 @@ import com.smartcity.web.dto.UserRegistrationDto;
 @Controller
 @RequestMapping("/organizers/")
 public class OrganizerController {
-
-	@Autowired
-	private OrganizerRepository organizerRepository;
 	
 	@Autowired
 	private EventVisiterRepository repository;
@@ -128,7 +125,7 @@ public class OrganizerController {
 	
 	@GetMapping("edit/{id}")
 	public String showUpdateForm(@PathVariable ("id") long id, Model model) {
-		Organizer organizer = this.organizerRepository.findById(id)
+		User organizer = this.userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid organizer id : " + id));
 		
 		model.addAttribute("organizer", organizer);
@@ -136,17 +133,16 @@ public class OrganizerController {
 	}
 	
 	@PostMapping("update/{id}")
-	public String updateOrganizer(@PathVariable("id") long id, @Valid Organizer organizer, BindingResult result, Model model) {
-		if(result.hasErrors()) {
-			organizer.setId(id);
-			return "update-organizer";
-		}
-		
-		// update organizer
-		organizerRepository.save(organizer);
+	public String updateOrganizer(@PathVariable("id") long id,Organizer organizer, UserRegistrationDto registrationDto, Model model) {
+		User updateOrganizer = userRepository.getOne(id);
+		updateOrganizer.setFirstName(registrationDto.getFirstName());
+		updateOrganizer.setLastName(registrationDto.getLastName());
+		updateOrganizer.setEmail(registrationDto.getEmail());
+		updateOrganizer.setPhoneNo(registrationDto.getPhoneNo());
+		userRepository.save(updateOrganizer);
 		
 		// get all organizers ( with update)
-		model.addAttribute("organizers", this.organizerRepository.findAll());
+		model.addAttribute("organizers", this.userRepository.findOrg2());
 		return "list-organizers";
 	}
 	

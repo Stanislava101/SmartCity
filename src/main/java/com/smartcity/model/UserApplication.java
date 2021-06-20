@@ -26,7 +26,7 @@ public class UserApplication {
 	@Column(name = "offerID")
 	private Long offerID;
 	
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
 	@JoinColumn(name="candidateID", referencedColumnName = "id")
 	private User client;
 	

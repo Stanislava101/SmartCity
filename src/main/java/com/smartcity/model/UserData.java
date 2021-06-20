@@ -20,7 +20,7 @@ public class UserData {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
     @JoinColumn(name = "user_data", referencedColumnName = "id")
 	public User user;
 	

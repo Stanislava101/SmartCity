@@ -43,11 +43,14 @@ public class User {
 	@Column(name = "password")
 	private String password;
 
- @OneToOne(mappedBy = "user")
+ @OneToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER,mappedBy = "user")
   private UserData data;
+ 
+ @OneToOne(mappedBy = "user")
+ private FileDB cv;
 
 	
-    @OneToMany(mappedBy = "client")
+    @OneToMany(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER,mappedBy = "client")
     private Set<UserApplication> offer;
     
     @OneToMany(mappedBy = "participant")
@@ -92,7 +95,7 @@ public class User {
 		this.roles = roles;
 	}
 	
-	public User(String firstName, String lastName,String phoneNo, String email, String password, Collection<Role> roles, UserData data) {
+	public User(String firstName, String lastName,String phoneNo, String email, String password, Collection<Role> roles, UserData data,FileDB cv) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -101,6 +104,7 @@ public class User {
 		this.password = password;
 		this.roles = roles;
 		this.data = data;
+		this.cv=cv;
 	}
 	public Long getId() {
 		return id;
@@ -167,5 +171,11 @@ public class User {
 			  public Set<EventVisiter> getParticipant(){
 			    return this.event;
 			  }
+				public FileDB getCV() {
+					return cv;
+				}
+				public void setCV(FileDB cv) {
+					this.cv = cv;
+				}
 
 }

@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.smartcity.model.FileDB;
 import com.smartcity.model.User;
+import com.smartcity.repository.FileDBRepository;
+import com.smartcity.service.FileStorageService;
 import com.smartcity.service.UserDataService;
 import com.smartcity.service.UserService;
 import com.smartcity.web.dto.UserRegistrationDto;
@@ -22,6 +26,12 @@ public class UserRegistrationController {
 	private UserService userService;
 	@Autowired
 	private UserDataService service;
+	
+	@Autowired
+	private FileStorageService storageService;
+	
+	@Autowired
+	private FileDBRepository fileDBRepository;
 
 	public UserRegistrationController(UserService userService) {
 		super();

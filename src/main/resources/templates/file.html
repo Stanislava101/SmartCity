@@ -1,0 +1,19 @@
+<html>
+<head>Upload file</head>
+<body>
+				<div th:if="${param.success}">
+					<div class="alert alert-info">You've successfully uploaded your file!</div>
+				</div>
+                <form action="#" th:action="@{upload}" method="post" enctype="multipart/form-data">
+                        <div class="row">
+    						<input type="file" name="file" />
+                            <div class="col-md-6">
+                                <input type="submit" class="btn btn-primary" value="Add">
+                            </div>
+
+                            <div class="form-group col-md-8"></div>
+
+                        </div>
+                    </form>
+                    </body>
+                    </html>

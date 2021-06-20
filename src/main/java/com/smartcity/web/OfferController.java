@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.smartcity.model.FileDB;
 import com.smartcity.model.Offer;
 import com.smartcity.model.User;
 import com.smartcity.model.UserApplication;
+import com.smartcity.repository.FileDBRepository;
 import com.smartcity.repository.OfferRepository;
 import com.smartcity.repository.UserApplicationRepository;
 import com.smartcity.repository.UserRepository;
+import com.smartcity.service.FileStorageService;
 import com.smartcity.service.OfferService;
 
 @Controller
@@ -34,6 +38,11 @@ public class OfferController {
 	
 	@Autowired
 	private OfferService service;
+	
+	  @Autowired
+	  private FileStorageService storageService;
+	  @Autowired
+	  private FileDBRepository fileDBRepository;
 	
 	private long userID;
 //	private long candidateID = (long)1;
@@ -51,11 +60,12 @@ public class OfferController {
 	
 	@RequestMapping("list")
 	public String list(Model model, @Param("keyword") String keyword) {
-        List<Offer> listOffers = service.listAll(keyword);
+        List<Offer> listOffers = service.listAllOffers(keyword);
         model.addAttribute("offers", listOffers);
         model.addAttribute("keyword", keyword);
 		return "list-joboffers";
 	}
+	
 	
 	@RequestMapping("allJobOffers")
 	public String allOffers(Model model, @Param("keyword") String keyword) {
@@ -271,6 +281,10 @@ public class OfferController {
 				//  long clientId = ((Number) a).longValue();
 				//User user = this.userRepository.findById(id)
 				//		.orElseThrow(() -> new IllegalArgumentException("Invalid candidate id : " + id));
+				FileDB userFile = this.fileDBRepository.findByUser(user);
+				String fileID = userFile.getId();
+				FileDB file= storageService.getFile(fileID);
+				model.addAttribute("fileUser", file);
 				model.addAttribute("user", user);
 				return "details-candidate";
 			}

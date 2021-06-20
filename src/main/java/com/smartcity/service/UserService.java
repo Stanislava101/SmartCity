@@ -34,6 +34,13 @@ public interface UserService extends UserDetailsService{
 
 	List<User> listOrg2();
 
-	User updateEmployer(UserRegistrationDto registrationDto);
+
+	List<User> userFound(String keyword);
+
+	List<User> listUser(String keyword);
+
+	List<User> listUs();
+
+
 
 }

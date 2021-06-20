@@ -19,6 +19,7 @@ import com.smartcity.repository.EmployerRepository;
 import com.smartcity.repository.UserRepository;
 import com.smartcity.service.EmployerService;
 import com.smartcity.service.UserService;
+import com.smartcity.service.UserServiceImpl;
 import com.smartcity.web.dto.UserRegistrationDto;
 
 @Controller
@@ -76,26 +77,19 @@ public class EmployerController {
 	public String showUpdateForm(@PathVariable ("id") long id, Model model) {
 		User employer = this.userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid employer id : " + id));
-		
 		model.addAttribute("employer", employer);
 		return "update-employer";
 	}
 	
 	@PostMapping("update/{id}")
-	public String updateEmployer(@PathVariable("id") long id, @Valid @ModelAttribute("user") UserRegistrationDto registrationDto, BindingResult result, Model model,User emp) {
-		if(result.hasErrors()) {
-			emp.setId((long)199);
-			return "update-employer";
-		}
-		
-		// update employer
-		//userRepository.save(employer);
-		//user.setId(id);
-		emp.setId((long)199);
-		emp= userService.updateEmployer(registrationDto);
-		
-		// get all employers ( with update)
-		model.addAttribute("employers",userService.listEm2());
+	public String updateEmployer(@PathVariable("id") long id,@ModelAttribute("user") UserRegistrationDto registrationDto, Model model) {
+		User updateEmployer = userRepository.getOne(id);
+		updateEmployer.setFirstName(registrationDto.getFirstName());
+		updateEmployer.setLastName(registrationDto.getLastName());
+		updateEmployer.setEmail(registrationDto.getEmail());
+		updateEmployer.setPhoneNo(registrationDto.getPhoneNo());
+		userRepository.save(updateEmployer);
+		model.addAttribute("employers",this.userRepository.findEm2());
 		return "list-employers";
 	}
 	
@@ -110,6 +104,21 @@ public class EmployerController {
 		return "list-employers";
 		
 	}
+	
+	
+	@GetMapping("deleteUser/{id}")
+	public String deleteUser(@PathVariable ("id") long id, Model model) {
+		
+		User employer = this.userRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid employer id : " + id));
+		
+		this.userRepository.delete(employer);
+	//	model.addAttribute("users", userService.listUs());
+		return "list-users";
+		
+	}
+	
+	
 	
 	 @RequestMapping("/filterEmployers")
 	    public String viewFilteredEmployers(Model model, @Param("keyword") String keyword) {

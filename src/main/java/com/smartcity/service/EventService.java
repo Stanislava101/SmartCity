@@ -35,9 +35,8 @@ public class EventService {
 	    }
 	    
 	    
+	    
 	    public List<Event> listAllEvents(String keyword) {
-	    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			String email = ((UserDetails)principal).getUsername();
 	        if (keyword != null) {
 	            return repo.findAll(keyword);
 	        }

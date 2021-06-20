@@ -56,8 +56,8 @@ public class EventController {
 	
 	@RequestMapping("list")
 	public String events(Model model, @Param("keyword") String keyword) {
-		    List<Event> listOffers = service.listAll(keyword);
-	        model.addAttribute("events", listOffers);
+		    List<Event> listEvents = service.listAllEvents(keyword);
+	        model.addAttribute("events", listEvents);
 	        model.addAttribute("keyword", keyword);
 		return "list-events";
 	}

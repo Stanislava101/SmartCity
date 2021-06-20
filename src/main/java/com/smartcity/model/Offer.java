@@ -1,6 +1,7 @@
 package com.smartcity.model;
 
 import java.util.Collection;
+
 import java.util.Set;
 
 import javax.persistence.CascadeType;

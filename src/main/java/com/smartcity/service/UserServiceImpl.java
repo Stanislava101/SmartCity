@@ -1,13 +1,17 @@
 package com.smartcity.service;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -95,7 +99,12 @@ public class UserServiceImpl implements UserService{
 	}
 
 
-
+    public List<User> userFound(String keyword) {
+        if (keyword != null) {
+            return userRepository.search(keyword);
+       }
+       return userRepository.findAll();
+}
 		
 	    public List<User> listAll(String keyword) {
 	        if (keyword != null) {
@@ -118,13 +127,6 @@ public class UserServiceImpl implements UserService{
 			return userRepository.findEm2();
 		}
 
-		@Override
-		public User updateEmployer(UserRegistrationDto registrationDto) {
-		User user = new User(registrationDto.getFirstName(), 
-					registrationDto.getLastName(), registrationDto.getPhoneNo(), registrationDto.getEmail(), Arrays.asList(new Role("ROLE_EMPLOYER")));
-			
-			return userRepository.save(user);
-		}
 
 		@Override
 		public List<User> listOrg(String keyword) {
@@ -138,6 +140,16 @@ public class UserServiceImpl implements UserService{
 		public List<User> listOrg2() {
 			return userRepository.findOrg2();
 		}
-		
-			
+
+		@Override
+		public List<User> listUser(String keyword) {
+	        if (keyword != null) {
+	            return userRepository.findSpecificUsers(keyword);
+	       }
+			return userRepository.findAllUsers();
+		}		
+		@Override
+		public List<User> listUs(){
+			return userRepository.findAllUsers();
+		}
 	}

@@ -69,11 +69,12 @@
               <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
             </a>
 					</li>
-
+<div sec:authorize="hasAuthority('ROLE_USER')" >
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="/profile">
               <i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
             </a>
+</div>
 					</li>
  <div sec:authorize="hasAuthority('ROLE_ORGANIZER')" > 
 					<li class="sidebar-item">
@@ -124,6 +125,7 @@
 						<ul id="forms" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 							<li class="sidebar-item"><a class="sidebar-link" th:href="@{/employers/list}">Employers</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" th:href="@{/organizers/list}">Organizers</a></li>
+														<li class="sidebar-item"><a class="sidebar-link" th:href="@{/users/list}">Users</a></li>
 									<li class="sidebar-item"><a class="sidebar-link" th:href="@{/events/list}">Events</a></li>
 								<li class="sidebar-item"><a class="sidebar-link" th:href="@{/offers/list}">Offers</a></li>
 		
@@ -163,10 +165,9 @@
 				<a class="sidebar-toggle d-flex">
           <i class="hamburger align-self-center"></i>
         </a>
-
-				<form class="form-inline d-none d-sm-inline-block">
+				<form class="form-inline d-none d-sm-inline-block" th:action="@{/foundUser}">
 					<div class="input-group input-group-navbar">
-						<input type="text" class="form-control" placeholder="Search…" aria-label="Search">
+						<input type="text" class="form-control" name="keyword" id="keyword" placeholder="Search…" aria-label="Search" th:value="${keyword}">
 						<div class="input-group-append">
 							<button class="btn" type="button">
                 <i class="align-middle" data-feather="search"></i>
