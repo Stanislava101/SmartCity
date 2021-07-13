@@ -23,7 +23,7 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#" th:href="@{/}">Registration and
+				<a class="navbar-brand" href="#" th:href="@{/}">
 					Login Module</a>
 			</div>
 		</div>
@@ -52,7 +52,7 @@
 					<div class = "form-group">
 						<label for ="username"> Username </label> :
 						<input type="text" class = "form-control" id ="username" name = "username"
-						placeholder="Enter Email ID" autofocus="autofocus" required>
+						placeholder="Enter Email" autofocus="autofocus" required>
 					</div>
 					
 					<div class="form-group">
@@ -74,6 +74,7 @@
 						<span>New user? <a href="/" th:href="@{/registration}">Register
 								here</a></span>
 				</div>
+				<div sec:authorize="isAuthenticated()">You've already logged in. Go to <a href="/" th:href="@{/}">main page</a></div>
 			</div>
 		</div>
 	</div>

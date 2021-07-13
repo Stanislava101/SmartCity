@@ -1,6 +1,6 @@
 package com.smartcity.service;
 
-import java.text.DecimalFormat;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.smartcity.model.Event;
 import com.smartcity.model.EventVisiter;
-import com.smartcity.model.Offer;
 import com.smartcity.model.User;
-import com.smartcity.model.UserApplication;
 import com.smartcity.repository.EventRepository;
 import com.smartcity.repository.EventVisiterRepository;
 
@@ -91,12 +89,20 @@ public class EventService {
 		    return repository.findAll();
 		}
 		
-	     public long count(long id) {  
+	     public int count(long id) {  
 	    	 if (id != 0) {
 	    		 return repository.count(id);
 			    }
 	    	  return repository.count(id);
 	     }
-	     
+
+	     public Boolean check(long eventID,String name) {
+	    	 long result = repository.checkVisiter(eventID,name);
+	    	 boolean participantExist = false;
+	    	 if(result==1) {
+	    		 participantExist = true;
+	    	 }
+	    	 return participantExist;
+	     }
 	    
 }

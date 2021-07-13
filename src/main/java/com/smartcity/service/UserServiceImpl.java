@@ -1,26 +1,21 @@
 package com.smartcity.service;
 
-import java.text.DecimalFormat;
+
 import java.util.Arrays;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.smartcity.model.Employer;
 import com.smartcity.model.Role;
 import com.smartcity.model.User;
-import com.smartcity.repository.EmployerRepository;
 import com.smartcity.repository.UserRepository;
 import com.smartcity.web.dto.UserRegistrationDto;
 
@@ -29,8 +24,6 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -117,7 +110,6 @@ public class UserServiceImpl implements UserService{
 		public List<User> listEm(String keyword) {
 	        if (keyword != null) {
 	            return userRepository.findAll(keyword);
-	    //    	return userRepository.findEm(keyword);
 	       }
 			return userRepository.findEm2();
 		}

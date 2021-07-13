@@ -27,20 +27,6 @@ public class Employer {
 	
 	@Column(name = "name")
 	private String name;
-	/*
-	@Email(message = "Email is not valid")
-	@Column(name = "email")
-	private String email;
-	
-    @Size(min = 10, max = 12, message = "Invalid phone number")
-	@Column(name = "phone_no")
-	private String phoneNo;
-	
-    @Size(min = 9, max = 15, message = "Your password must be between 9 and 15 characters")
-	@Column(name = "password")
-	private String password;
-	
-	*/
 	
 	@Column(name = "first_name")
 	private String firstName;

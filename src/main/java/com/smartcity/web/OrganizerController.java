@@ -3,6 +3,8 @@ package com.smartcity.web;
 
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import com.smartcity.repository.EventVisiterRepository;
 import com.smartcity.repository.OrganizerRepository;
 import com.smartcity.repository.UserRepository;
 import com.smartcity.service.EventService;
+import com.smartcity.service.MailService;
 import com.smartcity.service.OrganizerService;
 import com.smartcity.service.UserService;
 import com.smartcity.web.dto.UserRegistrationDto;
@@ -56,7 +59,7 @@ public class OrganizerController {
 	
 
 	@GetMapping("list")
-	public String students(Model model,@Param("keyword") String keyword) {
+	public String organizers(Model model,@Param("keyword") String keyword) {
 		List<User> listOrganizers = userService.listOrg(keyword);
 		model.addAttribute("organizers", listOrganizers);
 		model.addAttribute("keyword", keyword);
@@ -68,7 +71,6 @@ public class OrganizerController {
 	    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			String email = ((UserDetails)principal).getUsername();
 	        List<Event> listOfEvents = eventService.listAll(keyword);
-	//		model.addAttribute("events", this.eventRepository.findEventByOrg(email));
 	        model.addAttribute("events", listOfEvents);
 	        model.addAttribute("keyword", keyword);
 	        return "list-organizers-events";
@@ -157,7 +159,10 @@ public class OrganizerController {
 	}
 	
 	@PostMapping("add-organizer")
-	public String addOrganizer(@ModelAttribute("user") UserRegistrationDto registrationDto) {
+	public String addOrganizer(@Valid @ModelAttribute("user") UserRegistrationDto registrationDto, BindingResult result) throws Exception {
+		if(result.hasErrors()) {
+			return "add-organizer";
+		}
 		userService.saveOrganizer(registrationDto);
 		return "redirect:/organizers/add-organizer?success";
 	}
@@ -203,16 +208,24 @@ public class OrganizerController {
 		return "redirect:listOrganizerEvent";
 	}
 	 @RequestMapping("/participants/{id}")
-	    public String candidates(Model model, @PathVariable ("id") long id) {
+	    public String candidates(Model model, @PathVariable ("id") Long id) throws AddressException, MessagingException {
 		String filterID = String.valueOf(id);
-		System.out.println(filterID);
+		MailService sendEmail = new MailService();
 		 List<EventVisiter> listEvents = eventService.listAllByID(filterID);
 	       model.addAttribute("events", listEvents);
 	        Event event = this.eventRepository.findById(id)
 					.orElseThrow(() -> new IllegalArgumentException("Invalid event id : " + id));
-	        long ev1 = eventService.count(id);
-	        model.addAttribute("ev1",ev1);
+	        Integer ev1 = eventService.count(id);
+	        Integer nums = eventRepository.eventNum(id);
+	        String numParticipants = "";
+	        System.out.println(nums);
+	        if(ev1 == nums) {
+	 			sendEmail.getMailProperties();
+	        	numParticipants = "Maximum capacity has been reached";
+	        }
 
+	        model.addAttribute("numParticipants",numParticipants);
+	        model.addAttribute("ev1",ev1);
 	        model.addAttribute("event", event);
 	        return "participants";
 	    }
@@ -233,7 +246,6 @@ public class OrganizerController {
 			Event event = this.eventRepository.findById(a)
 					.orElseThrow(() -> new IllegalArgumentException("Invalid offer id : " + id));
 		
-		//	model.addAttribute("offer", participant);
 			model.addAttribute("event",event);
 			return "interested-event";
 		}

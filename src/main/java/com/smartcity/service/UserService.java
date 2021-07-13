@@ -3,13 +3,8 @@ package com.smartcity.service;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import com.smartcity.model.EventVisiter;
 import com.smartcity.model.User;
 import com.smartcity.web.dto.UserRegistrationDto;
 

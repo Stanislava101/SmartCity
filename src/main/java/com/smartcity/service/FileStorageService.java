@@ -22,10 +22,13 @@ public class FileStorageService {
   public void store(MultipartFile file,User user) throws IOException {
     String fileName = StringUtils.cleanPath(file.getOriginalFilename());
     FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes(),user);
-   // return fileDBRepository.save(FileDB);
     fileDBRepository.save(FileDB);
-  //  fileDBRepository.save(new FileDB(fileName, file.getContentType(), file.getBytes(),user));
   }
+  
+  public void storeCVData(String fileName,User user) throws IOException {
+	    FileDB FileDB = new FileDB(fileName,user);
+	    fileDBRepository.save(FileDB);
+	 	  }
 
   public FileDB getFile(String id) {
     return fileDBRepository.findById(id).get();

@@ -2,6 +2,7 @@ package com.smartcity.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.smartcity.model.UserApplication;
 import com.smartcity.service.UserService;
 
 @Configuration
@@ -25,7 +27,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-	
 	@Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
@@ -47,7 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	                "/js/**",
 	                "/css/**",
 	                "/img/**").permitAll()
-		 .antMatchers("/page/**").access("hasRole('ROLE_ADMIN')")
+	//	 .antMatchers("/page/**").access("hasRole('ROLE_ADMIN')")
 		 .antMatchers("/employers/list").access("hasRole('ROLE_ADMIN')") 
 		 .antMatchers("/employers/add-employer").access("hasRole('ROLE_ADMIN')") 
 		 .antMatchers("/organizers/add-organizer").access("hasRole('ROLE_ADMIN')") 

@@ -19,4 +19,9 @@ import com.smartcity.model.Event;
 		
 		@Query("SELECT id FROM Event")
 		public List<Event> findEventById(long l);
+		
+		@Query("SELECT capacity FROM Event where id=:id")
+		public Integer eventNum(Long id);
+		
+		
 	}

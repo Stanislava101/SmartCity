@@ -16,7 +16,12 @@
             <div class="card-body">
             <h4 th:text="${event.id}"></h4>
 			<h4 th:text="${event.name}"></h4>
+			<p th:text="${numParticipants}"></p>
 			<p>Number of participants:</p><p th:text="${ev1}"></p>
+			
+			<div th:if="${event.capacity!=null}">
+			/<p th:text="${event.capacity}"></p>
+			</div>
                 <div th:switch="${events}" class="container my-5">
                     <div class="col-md-10">
                         <h2 th:case="null">No events yet!</h2>

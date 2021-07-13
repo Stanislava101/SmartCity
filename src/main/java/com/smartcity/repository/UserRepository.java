@@ -20,14 +20,11 @@ import com.smartcity.web.dto.UserRegistrationDto;
 public interface UserRepository extends JpaRepository<User, Long>{
 	User findByEmail(String email);
 
-	
-	//@Query("SELECT p FROM User p WHERE p.firstName LIKE %?1%") //filter
-	@Query( "   from User e\r\n"
+@Query( "   from User e\r\n"
 			+ "  inner join Role p on p.id = e.id\r\n"
 			+ "where p.name = 'ROLE_EMPLOYER' and e.firstName LIKE %?1%")	
 	public List<User> findAll(String keyword);
 	
-	//@Query("SELECT p FROM User p WHERE p.firstName='Stanislava'")
 
 @Query( "   from User e\r\n"
 		+ "  inner join Role p on p.id = e.id\r\n"

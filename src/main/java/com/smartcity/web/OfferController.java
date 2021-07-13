@@ -1,6 +1,7 @@
 package com.smartcity.web;
 
 import java.util.List;
+
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -18,11 +19,15 @@ import com.smartcity.model.FileDB;
 import com.smartcity.model.Offer;
 import com.smartcity.model.User;
 import com.smartcity.model.UserApplication;
+import com.smartcity.model.UserData;
 import com.smartcity.repository.FileDBRepository;
+import com.smartcity.repository.MessageRepository;
 import com.smartcity.repository.OfferRepository;
 import com.smartcity.repository.UserApplicationRepository;
+import com.smartcity.repository.UserDataRepository;
 import com.smartcity.repository.UserRepository;
 import com.smartcity.service.FileStorageService;
+import com.smartcity.service.MessageService;
 import com.smartcity.service.OfferService;
 
 @Controller
@@ -37,7 +42,16 @@ public class OfferController {
 	private UserRepository userRepository;
 	
 	@Autowired
+	UserDataRepository userDataRepository;
+	
+	@Autowired
+	MessageRepository messageRepository;
+	
+	@Autowired
 	private OfferService service;
+	
+	@Autowired
+	private MessageService messageService;
 	
 	  @Autowired
 	  private FileStorageService storageService;
@@ -45,8 +59,8 @@ public class OfferController {
 	  private FileDBRepository fileDBRepository;
 	
 	private long userID;
-//	private long candidateID = (long)1;
-	
+	private long myUserID;
+	private long messageID;
 	
 	@GetMapping("showForm")
 	public String showForm(Offer offer) {
@@ -77,17 +91,21 @@ public class OfferController {
 	
 	@GetMapping("view-joboffer/{id}")
 	public String addOfferToProfile(@PathVariable ("id") long id,Model model) {
+		 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		 String username = ((UserDetails)principal).getUsername();
 		Offer offer = this.offerRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid offer id : " + id));
 
 		model.addAttribute("offers", this.offerRepository.findAll());
 		userID = id;
+        Boolean bb = service.check(offer.getId(), username);
+        model.addAttribute("personApplied", bb);
 		model.addAttribute("offer", offer);
 		return "view-joboffer-users";
 	}
 	
 	@GetMapping("view-events")
-	public String userEventsList(Model model) {
+	public String userList(Model model) {
 		model.addAttribute("offers", this.offerRepository.findAll());
 		return "view-events";
 	}
@@ -197,6 +215,20 @@ public class OfferController {
 		
 	}
 	
+	@GetMapping("deleteAppliedOffer/{id}")
+	public String deleteAppliedOffer(@PathVariable ("id") long id, Model model) {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		 String username = ((UserDetails)principal).getUsername();
+		UserApplication offer = this.repository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid offer id : " + id));
+		this.repository.deleteApplication(offer.getId());
+		List<UserApplication> listApplications = service.listAllAppliedOffers(username);
+		model.addAttribute("offers", listApplications);
+		return "redirect:../appliedJobOffers";
+
+	}
+	
+	
 	@GetMapping("view/{id}")
 	public String view(@PathVariable ("id") long id, Model model) {
 		
@@ -247,7 +279,8 @@ public class OfferController {
 			 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			 String email = ((UserDetails)principal).getUsername();
 			User user = this.userRepository.findByEmail(email);
-			service.addOffer(offers,userID,user);
+			Boolean approved = null;
+			service.addOffer(offers,userID,user,approved);
 			
 			return "redirect:allJobOffers";
 		}
@@ -259,6 +292,24 @@ public class OfferController {
 		        model.addAttribute("offers", listEvents);
 		        return "applied-offers";
 		    }
+		 
+			@GetMapping("employerResponse/{id}")
+			public String employerResponse(@PathVariable ("id") long id, Model model) {
+				UserApplication offer = this.repository.findById(id)
+						.orElseThrow(() -> new IllegalArgumentException("Invalid offer id : " + id));
+				String message="";
+				Boolean approved = offer.getApproved();
+				if(approved==null) {
+					message = "You have to wait..";
+				}
+				else if(approved==true) {
+					message = "Congratularions you are approved!The employer will contact you soon..";
+				}else if(approved==false) {
+					message = "You are not approved.";
+				}
+				model.addAttribute("message", message);
+				return "employer-response";
+			}
 		 
 			@GetMapping("details-offer/{id}")
 			public String interestedOfferDetails(@PathVariable ("id") long id, Model model) {
@@ -278,14 +329,14 @@ public class OfferController {
 				  UserApplication application = this.repository.findById(id)
 							.orElseThrow(() -> new IllegalArgumentException("Invalid candidate id : " + id));
 				User user =application.getClient();
-				//  long clientId = ((Number) a).longValue();
-				//User user = this.userRepository.findById(id)
-				//		.orElseThrow(() -> new IllegalArgumentException("Invalid candidate id : " + id));
+				UserData data = user.getData();
 				FileDB userFile = this.fileDBRepository.findByUser(user);
 				String fileID = userFile.getId();
 				FileDB file= storageService.getFile(fileID);
+				System.out.println(application.getId());
 				model.addAttribute("fileUser", file);
 				model.addAttribute("user", user);
+				model.addAttribute("data",data);
 				return "details-candidate";
 			}
 			
@@ -301,4 +352,48 @@ public class OfferController {
 			        model.addAttribute("offer", offer);
 			        return "candidates";
 			    }
+			 
+				@PostMapping("message/{id}") 
+				public String message(@Valid Offer data, BindingResult result,@PathVariable ("id") long id, Model model) {
+				if(result.hasErrors()) {
+					return "add-data";
+					
+					}
+					System.out.println("MyUserID = " + myUserID);
+					Offer userData = this.offerRepository.findById(id)
+							.orElseThrow(() -> new IllegalArgumentException("Invalid data id) : " + myUserID));
+					model.addAttribute("data", data);
+				
+					return "redirect:/";
+				}
+				 @GetMapping("notApproved/{id}")
+				public String notApprovedOffer(@PathVariable ("id") long id, Model model,UserApplication application) {
+					application = this.repository.findById(id)
+							.orElseThrow(() -> new IllegalArgumentException("Invalid offer id : " + id));
+					String message="";
+					application.setApproved(false);
+
+					message="Candidate is not approved";
+					application= repository.save(application);
+					repository.save(application);
+					model.addAttribute("application",application);
+					model.addAttribute("message",message);
+					return "not-approved";
+		
+				}
+				 
+				 @GetMapping("candidateApproved/{id}")
+				public String approvedOffer(@PathVariable ("id") long id, Model model,UserApplication application) {
+					application = this.repository.findById(id)
+							.orElseThrow(() -> new IllegalArgumentException("Invalid offer id : " + id));
+					String message="";
+					application.setApproved(true);
+					message="Candidate is approved";
+					application= repository.save(application);
+					repository.save(application);
+					model.addAttribute("application",application);
+					model.addAttribute("message",message);
+					return "candidate-approved";
+		
+				}
 }

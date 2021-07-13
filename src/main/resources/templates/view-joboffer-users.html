@@ -16,6 +16,11 @@
 <h4 th:text="${offer.id}"></h4>
 <h4 th:text="${offer.name}"></h4>
 <h4 th:text="${offer.desc}"></h4>
+<div th:if="${personApplied==true}">
+				<p>You have already applied.</p>
+            <input type="submit" class="btn btn-primary" value="Apply" disabled>
+</div>
+<div th:if="${personApplied==false}">
  <div class="col-md-10">
                     <form action="#" th:action="@{/offers/added}" th:object="${offer}" method="post">
                         <div class="row">
@@ -28,6 +33,7 @@
                         </div>
                     </form>
                 </div>
+</div>
 </body>
 
 </html>

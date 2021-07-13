@@ -19,6 +19,9 @@ public class Event {
 	@Column(name = "name")
 	private String name;
 	
+	@Column(name="capacity")
+	private Integer capacity;
+	
 	@Column(name = "description")
 	private String desc;
 	
@@ -29,10 +32,11 @@ public class Event {
 		super();
 	}
 
-	public Event(String name, String desc) {
+	public Event(String name, String desc, Integer capacity) {
 		super();
 		this.name = name;
 		this.desc = desc;
+		this.capacity = capacity;
 	}
 	
 	public long getId() {
@@ -53,6 +57,14 @@ public class Event {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
+	
+	public Integer getCapacity() {
+		return capacity;
+	}
+	public void setCapacity(Integer capacity) {
+		this.capacity = capacity;
+	}
+	
 	public String getOrganizer() {
 		return organizer;
 	}

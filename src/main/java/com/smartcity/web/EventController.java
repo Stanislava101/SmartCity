@@ -2,9 +2,6 @@ package com.smartcity.web;
 
 import java.util.List;
 
-import java.util.Optional;
-
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +11,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.smartcity.model.Event;
 import com.smartcity.model.EventVisiter;
-import com.smartcity.model.Offer;
 import com.smartcity.model.User;
-import com.smartcity.model.UserApplication;
 import com.smartcity.repository.EventRepository;
 import com.smartcity.repository.EventVisiterRepository;
 import com.smartcity.repository.UserRepository;
@@ -77,7 +70,7 @@ public class EventController {
 	}
 	
 	@PostMapping("add")
-	public String addStudent(@Valid Event events, BindingResult result, Model model) {
+	public String addEvent(@Valid Event events, BindingResult result, Model model) {
 		if(result.hasErrors()) {
 			return "add-event";
 		
@@ -98,7 +91,7 @@ public class EventController {
 	}
 	
 	@PostMapping("update/{id}")
-	public String updateStudent(@PathVariable("id") long id, @Valid Event event, BindingResult result, Model model) {
+	public String updateEvent(@PathVariable("id") long id, @Valid Event event, BindingResult result, Model model) {
 		if(result.hasErrors()) {
 			event.setId(id);
 			return "update-event";
@@ -114,7 +107,7 @@ public class EventController {
 	}
 	
 	@GetMapping("delete/{id}")
-	public String deleteStudent(@PathVariable ("id") long id, Model model) {
+	public String deleteEvent(@PathVariable ("id") long id, Model model) {
 		
 		Event event = this.eventRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid event id : " + id));
@@ -124,21 +117,45 @@ public class EventController {
 		return "list-events";
 		
 	}
+	
+	@GetMapping("deleteAttendings/{id}")
+	public String deleteAttendings(@PathVariable ("id") long id, Model model) {
+		
+		EventVisiter event = this.repo.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid event id : " + id));
+		
+		this.repo.delete(event);
+		model.addAttribute("events", this.repo.findAll());
+		return "redirect:../my-profile";
+		
+	}
+	
 	 @RequestMapping("/filterEvents")
 	    public String viewFilteredEvents(Model model, @Param("keyword") String keyword) {
-	        List<Event> listOffers = service.listAllEvents(keyword);
-	        model.addAttribute("events", listOffers);
+	        List<Event> listEvents = service.listAllEvents(keyword);
+	        model.addAttribute("events", listEvents);
 	        model.addAttribute("keyword", keyword);
 	        return "filter-events";
 	    }
 	 
 		@GetMapping("AttendEvent/{id}")
-		public String visiter(@PathVariable ("id") long id,Model model) {
+		public String visiter(@PathVariable ("id") Long id,Model model) {
 			Event event = this.eventRepository.findById(id)
 					.orElseThrow(() -> new IllegalArgumentException("Invalid event id : " + id));
 	
 			model.addAttribute("events", this.eventRepository.findAll());
+			 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			 String username = ((UserDetails)principal).getUsername();
 			visiterID = id;
+	        Integer ev1 = (int)service.count(id);
+	        Integer nums = eventRepository.eventNum(id);
+	        Boolean disabled = false;
+	        if(ev1 == nums) {
+	        	disabled = true;
+	        }
+	        Boolean bb = service.check(event.getId(),username);
+	        model.addAttribute("checkParticipant", bb);
+	        model.addAttribute("disabled",disabled);
 			model.addAttribute("event", event);
 			return "added-event";
 		}

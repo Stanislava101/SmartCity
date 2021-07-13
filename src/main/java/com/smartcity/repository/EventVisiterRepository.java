@@ -20,6 +20,9 @@ import com.smartcity.model.UserApplication;
 		public List<EventVisiter> findByID(String id);
 		
 		@Query("SELECT COUNT(eventID) FROM EventVisiter WHERE eventID = :id")
-		public long count(long id);
+		public int count(long id);
+		
+		@Query("SELECT COUNT(id) FROM EventVisiter where name=:name AND eventID=:eventID")
+		public long checkVisiter(long eventID, String name);
 	}
 

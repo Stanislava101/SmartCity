@@ -32,7 +32,7 @@ public class UserController {
 	}
 	
 	@GetMapping("list")
-	public String students(Model model,@Param("keyword") String keyword) {
+	public String users(Model model,@Param("keyword") String keyword) {
 		List<User> listUsers = userService.listUser(keyword);
 		model.addAttribute("users", listUsers);
 		model.addAttribute("keyword", keyword);

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,13 +27,17 @@ public class UserApplication {
 	@Column(name = "offerID")
 	private Long offerID;
 	
-	@ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
+	@Column(name="approved")
+	private Boolean approved;
+	
+//	@ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
+	@ManyToOne(optional = false)
 	@JoinColumn(name="candidateID", referencedColumnName = "id")
 	private User client;
 	
-  //  @ManyToOne(optional = false)
- //   @JoinColumn(name="user", referencedColumnName = "id")
-//	  private User client;
+	 @OneToOne(mappedBy = "application")
+	  private Message message;
+	
 	   
 	public UserApplication() {
 		super();
@@ -63,17 +68,23 @@ public class UserApplication {
 	public void setOfferID(Long id2) {
 		this.offerID = id2;
 	}
+	public Boolean getApproved() {
+		return approved;
+	}
+	public void setApproved(Boolean approved) {
+		this.approved = approved;
+	}
 	public User getClient() {
 		return client;
 	}
 	public void setClient(User client) {
 		this.client = client;
 	}
-	//  public void setClient(User client){
-	//	    this.client= client;
-	//	  }
-		  
-	//	  public User getClient(){
-	//		  return this.client;
-	//	  }
+	
+	public Message getMessage() {
+		return message;
+	}
+	public void setMessage(Message message) {
+		this.message = message;
+	}
 }

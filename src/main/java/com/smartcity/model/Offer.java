@@ -54,12 +54,6 @@ public class Offer {
 		this.desc = desc;
 	}
 	
-//	public Offer(String name, String desc) {
-	//	super();
-	//	this.name = name;
-	//	this.desc = desc;
-	//	this.client=client;
-	//}
 	
 	public long getId() {
 		return id;
@@ -85,12 +79,5 @@ public class Offer {
 	public void setEmployer(String employer) {
 		this.employer = employer;
 	}
-	//  public void setClient(User client){
-	//	    this.client = client;
-	//	  }
-		  
-	//	  public User getClient(){
-	//	    return this.client;
-		//  }
 	
 }

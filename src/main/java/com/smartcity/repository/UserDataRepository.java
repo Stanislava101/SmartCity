@@ -10,9 +10,5 @@ import com.smartcity.model.UserData;
 
 	@Repository
 	public interface UserDataRepository extends JpaRepository<UserData, Long>{
-
 		void save(User user);
-
-	//	 @Query("select u from userdata u where u.user_data = 32")
-	//	  UserData findByUser(@Param("data") long data);
 	}

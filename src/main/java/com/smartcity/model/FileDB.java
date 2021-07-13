@@ -38,6 +38,11 @@ public class FileDB {
 	  this.user= user;
   }
   
+  public FileDB(String name, User user) {
+	    this.name = name;
+	    this.user=user;
+	  }
+  
   public FileDB(String name, byte[] data, User user) {
 	    this.name = name;
 	    this.data = data;

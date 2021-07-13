@@ -76,28 +76,8 @@ public class MainController {
         model.addAttribute("keyword", keyword);
 		return "filter-users";
 	}
-	/* bug version
-	@GetMapping("/profile")
-	public String detailsUser(Model model, User user,UserData userData) {
-			 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			 String username = ((UserDetails)principal).getUsername();
-		 user = this.userRepository.findByEmail(username);
-		 long userID = user.getId();
-
-		User userDetails = this.userRepository.findById(userID)
-					.orElseThrow(() -> new IllegalArgumentException("Invalid candidate id : "));
-		userData = user.getData();
-		long idDescription = userData.getId();
-		UserData description = this.repository.findById(idDescription)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid data id : "));
-		System.out.println("My ID = " + idDescription );
-		model.addAttribute("userData",description);
-		model.addAttribute("user", userDetails);
-		return "about-me";
-	}
-	*/
 	@GetMapping("add-details/{id}")
-	public String showStudentForm(@PathVariable ("id") long id,UserData userData, Model model) {
+	public String details(@PathVariable ("id") long id,UserData userData, Model model) {
 		UserData dataID = this.repository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid data id : " + id));
 		myUserID = id;

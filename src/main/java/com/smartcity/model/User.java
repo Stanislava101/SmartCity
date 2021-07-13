@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import javax.persistence.JoinColumn;
 
@@ -33,10 +34,10 @@ public class User {
 	@Column(name = "last_name")
 	private String lastName;
 	
-    @Size(min = 10, max = 12, message = "Invalid phone number")
 	@Column(name = "phone_no")
 	private String phoneNo;
     
+
 	@Column(name = "email")
 	private String email;
 	
